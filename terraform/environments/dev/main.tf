@@ -15,3 +15,13 @@ module "security" {
   environment  = var.environment
   vpc_id       = module.networking.vpc_id
 }
+
+module "compute" {
+  source = "../../modules/compute"
+
+  project_name       = var.project_name
+  environment        = var.environment
+  subnet_id          = module.networking.private_subnets[0]
+  security_group_ids = [module.security.security_group_id]
+  instance_type      = "t3.micro"
+}
