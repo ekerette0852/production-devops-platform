@@ -41,3 +41,23 @@ output "compute_ami_id" {
   description = "Amazon Linux 2023 AMI selected for the instance."
   value       = module.compute.ami_id
 }
+
+output "load_balancer_dns_name" {
+  description = "Public DNS name of the Application Load Balancer."
+  value       = module.alb.load_balancer_dns_name
+}
+
+output "load_balancer_arn" {
+  description = "ARN of the Application Load Balancer."
+  value       = module.alb.load_balancer_arn
+}
+
+output "target_group_arn" {
+  description = "ARN of the ALB target group."
+  value       = module.alb.target_group_arn
+}
+
+output "alb_security_group_id" {
+  description = "Security group attached to the ALB."
+  value       = module.alb.alb_security_group_id
+}

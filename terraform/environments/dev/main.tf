@@ -25,3 +25,14 @@ module "compute" {
   security_group_ids = [module.security.security_group_id]
   instance_type      = "t3.micro"
 }
+
+module "alb" {
+  source = "../../modules/alb"
+
+  project_name       = var.project_name
+  environment        = var.environment
+  vpc_id             = module.networking.vpc_id
+  public_subnet_ids  = module.networking.public_subnets
+  target_instance_id = module.compute.instance_id
+  target_port        = 80
+}
