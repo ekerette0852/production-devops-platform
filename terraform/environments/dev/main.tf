@@ -36,3 +36,14 @@ module "alb" {
   target_instance_id = module.compute.instance_id
   target_port        = 80
 }
+
+resource "aws_vpc_security_group_ingress_rule" "app_http_from_alb" {
+  description = "Allow HTTP traffic from the Application Load Balancer"
+
+  security_group_id            = module.security.security_group_id
+  referenced_security_group_id = module.alb.alb_security_group_id
+
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+}
