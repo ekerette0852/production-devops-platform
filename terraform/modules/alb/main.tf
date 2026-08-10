@@ -80,6 +80,8 @@ resource "aws_lb_target_group" "app" {
 }
 
 resource "aws_lb_target_group_attachment" "app" {
+  count = var.target_instance_id != null ? 1 : 0
+
   target_group_arn = aws_lb_target_group.app.arn
   target_id        = var.target_instance_id
   port             = var.target_port

@@ -32,3 +32,8 @@ variable "availability_zones" {
   type        = list(string)
   description = "Availability zones used by the networking module."
 }
+
+variable "instance_type" {
+  description = "EC2 instance type used by the launch template"
+  type        = string
+}

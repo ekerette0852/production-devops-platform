@@ -23,3 +23,9 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "create_instance" {
+  description = "Whether to create the standalone EC2 instance"
+  type        = bool
+  default     = true
+}

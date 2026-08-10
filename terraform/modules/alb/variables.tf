@@ -19,8 +19,9 @@ variable "public_subnet_ids" {
 }
 
 variable "target_instance_id" {
-  description = "EC2 instance registered with the target group."
+  description = "optional standalone EC2 instance registered with the target group."
   type        = string
+  default     = null
 }
 
 variable "target_port" {

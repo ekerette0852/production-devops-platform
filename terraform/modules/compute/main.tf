@@ -59,6 +59,8 @@ resource "aws_iam_instance_profile" "ssm" {
 }
 
 resource "aws_instance" "app" {
+  count = var.create_instance ? 1 : 0
+
   ami                    = data.aws_ami.amazon_linux_2023.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
