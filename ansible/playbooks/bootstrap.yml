@@ -1,0 +1,19 @@
+---
+- name: Bootstrap production EC2 instances
+  hosts: production
+  become: true
+
+  tasks:
+    - name: Ensure common packages are installed
+      ansible.builtin.dnf:
+        name:
+          - git
+          - curl-minimal
+          - unzip
+        state: present
+
+    - name: Ensure chronyd is enabled and running
+      ansible.builtin.service:
+        name: chronyd
+        state: started
+        enabled: true
