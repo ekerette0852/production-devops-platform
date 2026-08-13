@@ -1,0 +1,4 @@
+---
+- name: Restart production web container
+  ansible.builtin.command:
+    cmd: docker restart production-web

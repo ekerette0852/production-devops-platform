@@ -1,0 +1,33 @@
+---
+- name: Ensure host nginx package is absent
+  ansible.builtin.dnf:
+    name: nginx
+    state: absent
+
+- name: Ensure production web directory exists
+  ansible.builtin.file:
+    path: /opt/production-web
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Deploy production web page
+  ansible.builtin.copy:
+    dest: /opt/production-web/index.html
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Production DevOps Platform</title>
+      </head>
+      <body>
+        <h1>Production DevOps Platform</h1>
+        <p>Managed by Ansible through AWS Systems Manager.</p>
+        <p>Served by Dockerized Nginx and managed automatically by Ansible.</p>
+      </body>
+      </html>
+  notify: Restart production web container
