@@ -2,9 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCESS_KEY_ID     = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        AWS_DEFAULT_REGION    = 'us-east-1'
+        AWS_DEFAULT_REGION = 'us-east-1'
+        AWS_REGION = 'us-east-1'
     }
 
     stages {
@@ -16,13 +15,26 @@ pipeline {
 
         stage('Verify AWS Identity') {
             steps {
-                sh 'aws sts get-caller-identity'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh '''
+                        echo "Verifying AWS identity..."
+                        aws sts get-caller-identity
+                    '''
+                }
             }
         }
 
         stage('Deploy Production') {
             steps {
-                sh './scripts/deploy-production.sh'
+                withCredentials([
+                    string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
+                    string(credentialsId: 'aws-secret-access-key', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh './scripts/deploy-production.sh'
+                }
             }
         }
     }
