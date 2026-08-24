@@ -61,7 +61,6 @@ stage('Record Current Version') {
                 script {
                     try {
                         sh './scripts/deploy-production.sh'
-                        sh 'exit 1'
                     } catch (err) {
                         echo '========================================'
                         echo 'DEPLOYMENT FAILED - STARTING ROLLBACK'
