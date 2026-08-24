@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    options {
+        timeout(time: 10, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
     environment {
         AWS_DEFAULT_REGION = 'us-east-1'
         AWS_REGION = 'us-east-1'
@@ -36,6 +42,31 @@ pipeline {
                     sh './scripts/deploy-production.sh'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '========================================'
+            echo 'PRODUCTION DEPLOYMENT SUCCESSFUL'
+            echo '========================================'
+        }
+
+        failure {
+            echo '========================================'
+            echo 'PRODUCTION DEPLOYMENT FAILED'
+            echo '========================================'
+        }
+
+        aborted {
+            echo '========================================'
+            echo 'PRODUCTION DEPLOYMENT ABORTED'
+            echo '========================================'
+        }
+
+        always {
+            echo "Build: ${env.BUILD_NUMBER}"
+            echo "Job: ${env.JOB_NAME}"
         }
     }
 }
