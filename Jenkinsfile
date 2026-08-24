@@ -28,7 +28,6 @@ pipeline {
                     sh '''
                         echo "Verifying AWS identity..."
                         aws sts get-caller-identity
-                        exit 1
                     '''
                 }
             }
