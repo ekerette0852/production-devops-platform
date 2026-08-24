@@ -45,28 +45,67 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo '========================================'
-            echo 'PRODUCTION DEPLOYMENT SUCCESSFUL'
-            echo '========================================'
-        }
+post {
+    success {
+        echo '========================================'
+        echo 'PRODUCTION DEPLOYMENT SUCCESSFUL'
+        echo '========================================'
+    }
 
-        failure {
-            echo '========================================'
-            echo 'PRODUCTION DEPLOYMENT FAILED'
-            echo '========================================'
-        }
+    failure {
+        echo '========================================'
+        echo 'PRODUCTION DEPLOYMENT FAILED'
+        echo '========================================'
 
-        aborted {
-            echo '========================================'
-            echo 'PRODUCTION DEPLOYMENT ABORTED'
-            echo '========================================'
-        }
+        emailext(
+            to: 'slylaw4u@gmail.com',
+            subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+Jenkins production deployment failed.
 
-        always {
-            echo "Build: ${env.BUILD_NUMBER}"
-            echo "Job: ${env.JOB_NAME}"
-        }
+Job: ${env.JOB_NAME}
+Build: #${env.BUILD_NUMBER}
+Status: FAILED
+
+Build URL:
+${env.BUILD_URL}
+
+Please review the Jenkins console output.
+"""
+        )
+    }
+
+    fixed {
+        echo '========================================'
+        echo 'PRODUCTION PIPELINE RECOVERED'
+        echo '========================================'
+
+        emailext(
+            to: 'slylaw4u@gmail.com',
+            subject: "RECOVERED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: """
+Jenkins production pipeline has recovered.
+
+Job: ${env.JOB_NAME}
+Build: #${env.BUILD_NUMBER}
+Status: SUCCESS
+
+The previous build failed, but this build completed successfully.
+
+Build URL:
+${env.BUILD_URL}
+"""
+        )
+    }
+
+    aborted {
+        echo '========================================'
+        echo 'PRODUCTION DEPLOYMENT ABORTED'
+        echo '========================================'
+    }
+
+    always {
+        echo "Build: ${env.BUILD_NUMBER}"
+        echo "Job: ${env.JOB_NAME}"
     }
 }
