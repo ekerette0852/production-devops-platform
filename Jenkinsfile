@@ -41,12 +41,18 @@ stage('Record Current Version') {
                 returnStdout: true
             ).trim()
 
+            env.SHORT_COMMIT = sh(
+                script: 'git rev-parse --short HEAD',
+                returnStdout: true
+            ).trim()
+
             env.PREVIOUS_COMMIT = sh(
                 script: 'git rev-parse HEAD^',
                 returnStdout: true
             ).trim()
 
             echo "Current commit: ${env.CURRENT_COMMIT}"
+            echo "Short commit: ${env.SHORT_COMMIT}"
             echo "Rollback commit: ${env.PREVIOUS_COMMIT}"
         }
     }
@@ -88,6 +94,7 @@ post {
     success {
         echo '========================================'
         echo 'PRODUCTION DEPLOYMENT SUCCESSFUL'
+        echo "Deployed commit: ${env.SHORT_COMMIT}"
         echo '========================================'
     }
 
