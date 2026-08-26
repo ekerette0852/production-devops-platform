@@ -89,7 +89,6 @@ stage('Record Current Version') {
         }
     }
 }
-
 stage('Update GitOps Repository') {
     steps {
         script {
@@ -117,7 +116,7 @@ stage('Update GitOps Repository') {
         }
     }
 }
-
+}
 post {
     success {
         echo '========================================'
