@@ -90,6 +90,34 @@ stage('Record Current Version') {
     }
 }
 
+stage('Update GitOps Repository') {
+    steps {
+        script {
+            sh '''
+                rm -rf /tmp/production-devops-gitops
+
+                git clone git@github.com:ekerette0852/production-devops-gitops.git /tmp/production-devops-gitops
+
+                cd /tmp/production-devops-gitops
+
+                git config user.name "Jenkins"
+                git config user.email "jenkins@jessedevops.com"
+
+                sed -i "s|image: nginx:.*|image: nginx:1.30.4|" apps/production-app/deployment.yaml
+
+                git add apps/production-app/deployment.yaml
+
+                if git diff --cached --quiet; then
+                    echo "No GitOps changes detected"
+                else
+                    git commit -m "Jenkins update production image ${BUILD_NUMBER}"
+                    git push origin main
+                fi
+            '''
+        }
+    }
+}
+
 post {
     success {
         echo '========================================'
@@ -155,32 +183,4 @@ ${env.BUILD_URL}
         echo "Job: ${env.JOB_NAME}"
     }
 }
-}
-
-stage('Update GitOps Repository') {
-    steps {
-        script {
-            sh '''
-                rm -rf /tmp/production-devops-gitops
-
-                git clone git@github.com:ekerette0852/production-devops-gitops.git /tmp/production-devops-gitops
-
-                cd /tmp/production-devops-gitops
-
-                git config user.name "Jenkins"
-                git config user.email "jenkins@jessedevops.com"
-
-                sed -i "s|image: nginx:.*|image: nginx:1.30.4|" apps/production-app/deployment.yaml
-
-                git add apps/production-app/deployment.yaml
-
-                if git diff --cached --quiet; then
-                    echo "No GitOps changes detected"
-                else
-                    git commit -m "Jenkins update production image ${BUILD_NUMBER}"
-                    git push origin main
-                fi
-            '''
-        }
-    }
 }
