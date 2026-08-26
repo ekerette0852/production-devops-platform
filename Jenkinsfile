@@ -12,7 +12,6 @@ pipeline {
         AWS_REGION = 'us-east-1'
 
         IMAGE_REPO = 'ghcr.io/ekerette0852/production-devops-platform'
-        IMAGE_TAG  = ''
     }
 
     stages {
