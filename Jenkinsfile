@@ -10,6 +10,9 @@ pipeline {
     environment {
         AWS_DEFAULT_REGION = 'us-east-1'
         AWS_REGION = 'us-east-1'
+
+        IMAGE_REPO = 'ghcr.io/ekerette0852/production-devops-platform'
+        IMAGE_TAG  = ''
     }
 
     stages {
@@ -46,6 +49,9 @@ stage('Record Current Version') {
                 returnStdout: true
             ).trim()
 
+            env.IMAGE_TAG = env.SHORT_COMMIT
+            echo "Image version: ${env.IMAGE_REPO}:${env.IMAGE_TAG}"
+
             env.PREVIOUS_COMMIT = sh(
                 script: 'git rev-parse HEAD^',
                 returnStdout: true
@@ -57,7 +63,17 @@ stage('Record Current Version') {
         }
     }
 }
+stage('Build Container Image') {
+    steps {
+        sh '''
+            echo "Building image: ${IMAGE_REPO}:${IMAGE_TAG}"
 
+            docker build \
+              -t ${IMAGE_REPO}:${IMAGE_TAG} \
+              .
+        '''
+    }
+}
     stage('Deploy Production') {
         steps {
             withCredentials([
