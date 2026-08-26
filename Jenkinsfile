@@ -88,7 +88,6 @@ stage('Record Current Version') {
             }
         }
     }
-}
 stage('Update GitOps Repository') {
     steps {
         script {
