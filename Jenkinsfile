@@ -137,14 +137,14 @@ stage('Update GitOps Repository') {
                 git config user.name "Jenkins"
                 git config user.email "jenkins@jessedevops.com"
 
-                sed -i "s|image: nginx:.*|image: nginx:1.30.4|" apps/production-app/deployment.yaml
+                sed -i "s|^\([[:space:]]*\)image:.*|\1image: ${IMAGE_REPO}:${IMAGE_TAG}|" apps/production-app/deployment.yaml
 
                 git add apps/production-app/deployment.yaml
 
                 if git diff --cached --quiet; then
                     echo "No GitOps changes detected"
                 else
-                    git commit -m "Jenkins update production image ${BUILD_NUMBER}"
+                    git commit -m "Deploy ${IMAGE_REPO}:$IMAGE_TAG}""
                     git push origin main
                 fi
             '''
