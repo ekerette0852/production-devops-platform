@@ -73,6 +73,27 @@ stage('Build Container Image') {
         '''
     }
 }
+stage('Push Container Image') {
+    steps {
+        withCredentials([
+            usernamePassword(
+                credentialsId: 'ghcr-credentials',
+                usernameVariable: 'GHCR_USER',
+                passwordVariable: 'GHCR_TOKEN'
+            )
+        ]) {
+            sh '''
+                echo "$GHCR_TOKEN" | docker login ghcr.io \
+                  -u "$GHCR_USER" \
+                  --password-stdin
+
+                docker push ${IMAGE_REPO}:${IMAGE_TAG}
+
+                docker logout ghcr.io
+            '''
+        }
+    }
+}
     stage('Deploy Production') {
         steps {
             withCredentials([
