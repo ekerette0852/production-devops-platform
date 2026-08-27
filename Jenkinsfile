@@ -144,7 +144,7 @@ stage('Update GitOps Repository') {
                 if git diff --cached --quiet; then
                     echo "No GitOps changes detected"
                 else
-                    git commit -m "Deploy ${IMAGE_REPO}:$IMAGE_TAG}""
+                    git commit -m "Deploy ${IMAGE_REPO}:${IMAGE_TAG}"
                     git push origin main
                 fi
             '''
