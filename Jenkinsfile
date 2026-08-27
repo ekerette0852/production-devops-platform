@@ -137,7 +137,7 @@ stage('Update GitOps Repository') {
                 git config user.name "Jenkins"
                 git config user.email "jenkins@jessedevops.com"
 
-                sed -i "s|^\([[:space:]]*\)image:.*|\1image: ${IMAGE_REPO}:${IMAGE_TAG}|" apps/production-app/deployment.yaml
+                sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" apps/production-app/deployment.yaml
 
                 git add apps/production-app/deployment.yaml
 
