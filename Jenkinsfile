@@ -155,6 +155,61 @@ stage('Update GitOps Repository') {
     }
 }
 }
+stage('Validate Staging') {
+    steps {
+        sh '''
+            echo "Waiting for staging rollout..."
+            kubectl rollout status deployment/staging-web \
+              -n staging \
+              --timeout=120s
+
+            echo "Verifying staging pods..."
+            kubectl get pods -n staging
+
+            echo "Verifying deployed image..."
+            kubectl get deployment staging-web \
+              -n staging \
+              -o jsonpath='{.spec.template.spec.containers[0].image}{"\\n"}'
+        '''
+    }
+}
+stage('Approve Production') {
+    steps {
+        timeout(time: 15, unit: 'MINUTES') {
+            input message: 'Staging deployment completed. Promote this image to production?',
+                  ok: 'Promote to Production'
+        }
+    }
+}
+stage('Promote to Production') {
+    steps {
+        script {
+            sh '''
+                rm -rf /tmp/production-devops-gitops
+
+                git clone git@github.com:ekerette0852/production-devops-gitops.git \
+                  /tmp/production-devops-gitops
+
+                cd /tmp/production-devops-gitops
+
+                git config user.name "Jenkins"
+                git config user.email "jenkins@jessedevops.com"
+
+                sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" \
+                  apps/production-app/deployment.yaml
+
+                git add apps/production-app/deployment.yaml
+
+                if git diff --cached --quiet; then
+                    echo "Production already uses ${IMAGE_REPO}:${IMAGE_TAG}"
+                else
+                    git commit -m "Promote ${IMAGE_REPO}:${IMAGE_TAG} to production"
+                    git push origin main
+                fi
+            '''
+        }
+    }
+}
 post {
     success {
         echo '========================================'
