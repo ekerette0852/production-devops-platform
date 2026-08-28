@@ -94,7 +94,10 @@ stage('Push Container Image') {
         }
     }
 }
-    stage('Deploy Production') {
+    stage('Legacy Deploy Production') {
+        when {
+            expression { false }
+        }
         steps {
             withCredentials([
                 string(credentialsId: 'aws-access-key-id', variable: 'AWS_ACCESS_KEY_ID'),
@@ -137,14 +140,14 @@ stage('Update GitOps Repository') {
                 git config user.name "Jenkins"
                 git config user.email "jenkins@jessedevops.com"
 
-                sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" apps/production-app/deployment.yaml
+                sed -i "s|image: .*|image: ${IMAGE_REPO}:${IMAGE_TAG}|" apps/staging-app/deployment.yaml
 
-                git add apps/production-app/deployment.yaml
+                git add apps/staging-app/deployment.yaml
 
                 if git diff --cached --quiet; then
                     echo "No GitOps changes detected"
                 else
-                    git commit -m "Deploy ${IMAGE_REPO}:${IMAGE_TAG}"
+                    git commit -m "Deploy ${IMAGE_REPO}:${IMAGE_TAG} to staging"
                     git push origin main
                 fi
             '''
