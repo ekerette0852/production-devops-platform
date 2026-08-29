@@ -111,6 +111,7 @@ Versioned Container Image
                                       |
                                       v
                                   Production
+```
 
 ## Production Pipeline Evidence
 
