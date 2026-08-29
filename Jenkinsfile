@@ -209,6 +209,7 @@ stage('Promote to Production') {
         }
     }
 }
+}
 post {
     success {
         echo '========================================'
