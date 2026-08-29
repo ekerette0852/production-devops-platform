@@ -154,7 +154,6 @@ stage('Update GitOps Repository') {
         }
     }
 }
-}
 stage('Validate Staging') {
     steps {
         sh '''
