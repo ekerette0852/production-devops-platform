@@ -112,6 +112,14 @@ Versioned Container Image
                                       v
                                   Production
 
+## Production Pipeline Evidence
+
+The Jenkins production pipeline successfully promotes the same validated, versioned container image from staging to production after manual approval.
+
+![Jenkins Production Pipeline Success](screenshots/jenkins/jenkins-production-pipeline-success.png)
+
+---
+
 ## Repository Structure
 
 ```
