@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: production-web-alerts
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: production-web.rules
+      rules:
+        - alert: ProductionWebUnavailable
+          expr: kube_deployment_status_replicas_available{namespace="production", deployment="production-web"} < 1
+          for: 1m
+          labels:
+            severity: critical
+            environment: production
+            service: production-web
+          annotations:
+            summary: "Production web application is unavailable"
+            description: "The production-web deployment has had zero available replicas for more than 1 minute."
