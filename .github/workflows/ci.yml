@@ -1,0 +1,44 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t production-devops-app:1.0.0 \
+            ./cicd/app
+
+      - name: Start container
+        run: |
+          docker run -d \
+            --name production-devops-app \
+            -p 8888:80 \
+            production-devops-app:1.0.0
+
+      - name: Test application
+        run: |
+          sleep 3
+          curl --fail http://localhost:8888
+          curl -s http://localhost:8888 | grep "Production DevOps Platform"
+
+      - name: Show container status
+        if: always()
+        run: docker ps -a
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f production-devops-app || true
