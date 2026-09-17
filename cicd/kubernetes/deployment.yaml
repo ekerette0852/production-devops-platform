@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: production-devops-app
-          image: YOUR_GITHUB_USERNAME/production-devops-app:1.0.0
+          image: ghcr.io/ekerette0852/production-devops-app:1.0.0
           ports:
             - containerPort: 80
           resources:
