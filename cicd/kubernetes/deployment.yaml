@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: production-devops-app
+  labels:
+    app: production-devops-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: production-devops-app
+  template:
+    metadata:
+      labels:
+        app: production-devops-app
+    spec:
+      containers:
+        - name: production-devops-app
+          image: YOUR_GITHUB_USERNAME/production-devops-app:1.0.0
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "128Mi"
