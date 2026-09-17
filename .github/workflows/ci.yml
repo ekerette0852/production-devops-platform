@@ -30,12 +30,15 @@ jobs:
             -t production-devops-app:${IMAGE_VERSION} \
             ./cicd/app
 
-      - name: Start container
-        run: |
-          docker run -d \
-            --name production-devops-app \
-            -p 8888:80 \
-            production-devops-app:${IMAGE_VERSION}
+- name: Remove existing test container
+  run: docker rm -f production-devops-app 2>/dev/null || true
+
+- name: Start container
+  run: |
+    docker run -d \
+      --name production-devops-app \
+      -p 8888:80 \
+      production-devops-app:${IMAGE_VERSION}
 
       - name: Test application
         run: |
