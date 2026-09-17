@@ -8,6 +8,14 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/ekerette0852/production-devops-app
+  IMAGE_VERSION: 1.0.0
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -19,7 +27,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t production-devops-app:1.0.0 \
+            -t production-devops-app:${IMAGE_VERSION} \
             ./cicd/app
 
       - name: Start container
@@ -27,7 +35,7 @@ jobs:
           docker run -d \
             --name production-devops-app \
             -p 8888:80 \
-            production-devops-app:1.0.0
+            production-devops-app:${IMAGE_VERSION}
 
       - name: Test application
         run: |
@@ -42,3 +50,22 @@ jobs:
       - name: Cleanup
         if: always()
         run: docker rm -f production-devops-app || true
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag Docker image
+        if: github.event_name == 'push'
+        run: |
+          docker tag \
+            production-devops-app:${IMAGE_VERSION} \
+            ${IMAGE_NAME}:${IMAGE_VERSION}
+
+      - name: Push Docker image to GHCR
+        if: github.event_name == 'push'
+        run: docker push ${IMAGE_NAME}:${IMAGE_VERSION}
