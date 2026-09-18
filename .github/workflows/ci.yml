@@ -78,10 +78,10 @@ jobs:
         env:
           GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
         run: |
-          rm -rf /tmp/production-devops-gitops
+          GITOPS_DIR="${{ runner.temp }}/production-devops-gitops-${{ github.run_id }}"
 
-          git clone https://x-access-token:${GITOPS_TOKEN}@github.com/ekerette0852/production-devops-gitops.git /tmp/production-devops-gitops
-          cd /tmp/production-devops-gitops
+          git clone https://x-access-token:${GITOPS_TOKEN}@github.com/ekerette0852/production-devops-gitops.git "$GITOPS_DIR"
+          cd "$GITOPS_DIR"
 
           sed -i "s|image: .*|image: ${IMAGE_NAME}:${IMAGE_VERSION}|" apps/production-app/deployment.yaml
 
