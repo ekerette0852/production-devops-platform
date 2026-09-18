@@ -9,7 +9,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -72,3 +72,20 @@ jobs:
       - name: Push Docker image to GHCR
         if: github.event_name == 'push'
         run: docker push ${IMAGE_NAME}:${IMAGE_VERSION}
+
+      - name: Update Kubernetes image manifest
+        if: github.event_name == 'push'
+        run: |
+          sed -i "s|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${IMAGE_VERSION}|" cicd/kubernetes/deployment.yaml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add cicd/kubernetes/deployment.yaml
+
+          if git diff --cached --quiet; then
+            echo "Kubernetes manifest already uses ${IMAGE_VERSION}"
+          else
+            git commit -m "chore: update Kubernetes image to ${IMAGE_VERSION} [skip ci]"
+            git push
+          fi
