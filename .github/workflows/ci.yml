@@ -73,19 +73,24 @@ jobs:
         if: github.event_name == 'push'
         run: docker push ${IMAGE_NAME}:${IMAGE_VERSION}
 
-      - name: Update Kubernetes image manifest
+      - name: Update GitOps production manifest
         if: github.event_name == 'push'
+        env:
+          GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
         run: |
-          sed -i "s|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${IMAGE_VERSION}|" cicd/kubernetes/deployment.yaml
+          git clone https://x-access-token:${GITOPS_TOKEN}@github.com/ekerette0852/production-devops-gitops.git /tmp/production-devops-gitops
+          cd /tmp/production-devops-gitops
+
+          sed -i "s|image: .*|image: ${IMAGE_NAME}:${IMAGE_VERSION}|" apps/production-app/deployment.yaml
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add cicd/kubernetes/deployment.yaml
+          git add apps/production-app/deployment.yaml
 
           if git diff --cached --quiet; then
-            echo "Kubernetes manifest already uses ${IMAGE_VERSION}"
+            echo "Production manifest already uses ${IMAGE_VERSION}"
           else
-            git commit -m "chore: update Kubernetes image to ${IMAGE_VERSION} [skip ci]"
-            git push
+            git commit -m "chore: deploy production ${IMAGE_VERSION}"
+            git push origin main
           fi
