@@ -51,8 +51,8 @@ This project demonstrates how to design, provision, deploy, and monitor a produc
 
 ### 🚧 Phase 3 – CI/CD
 
-- [ ] GitHub Actions
-- [ ] Automated Deployment
+- [x] GitHub Actions
+- [x] Automated Deployment
 - [ ] Rollback Strategy
 
 ---
@@ -159,6 +159,49 @@ promoted to production without rebuilding the artifact.
 
 For the detailed architecture and deployment flow, see
 [docs/architecture.md](docs/architecture.md).
+
+## GitOps Production Deployment
+
+The platform also implements a GitOps-based production deployment workflow using GitHub Actions and Argo CD.
+
+### GitOps Workflow
+
+```mermaid
+flowchart LR
+    A[Developer] --> B[GitHub Repository]
+    B --> C[GitHub Actions]
+    C --> D[Build and Test]
+    D --> E[Versioned Container Image]
+    E --> F[GitHub Container Registry]
+    C --> G[Update GitOps Repository]
+    G --> H[Argo CD]
+    H --> I[Kubernetes Production]
+
+### GitOps Deployment Flow
+
+The production environment follows a GitOps deployment model.
+
+1. A code change is pushed to the application repository.
+2. GitHub Actions builds and tests the application.
+3. A versioned Docker image is created.
+4. The image is pushed to GitHub Container Registry (GHCR).
+5. The production manifest in the GitOps repository is updated with the new image version.
+6. Argo CD detects the Git repository change.
+7. Argo CD synchronizes the desired state with the Kubernetes production cluster.
+8. Kubernetes deploys the new version.
+
+### Production Deployment Verification
+
+The GitOps workflow has been successfully validated end-to-end.
+
+- GitHub Actions CI pipeline: **Successful**
+- Container image: `ghcr.io/ekerette0852/production-devops-app:1.0.1`
+- GitOps manifest update: **Successful**
+- Argo CD application: **Synced**
+- Argo CD health status: **Healthy**
+- Kubernetes production deployment: **Running version 1.0.1**
+
+This architecture separates CI from deployment. GitHub Actions builds, tests, publishes, and updates the desired application version in Git, while Argo CD continuously reconciles the Kubernetes production environment with the state stored in the GitOps repository.
 
 ## Author
 
