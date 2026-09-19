@@ -177,6 +177,7 @@ flowchart LR
     G --> H[Argo CD]
     H --> I[Kubernetes Production]
 
+
 ### GitOps Deployment Flow
 
 The production environment follows a GitOps deployment model.
