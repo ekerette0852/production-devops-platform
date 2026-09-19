@@ -176,6 +176,7 @@ flowchart LR
     C --> G[Update GitOps Repository]
     G --> H[Argo CD]
     H --> I[Kubernetes Production]
+```
 
 
 ### GitOps Deployment Flow
