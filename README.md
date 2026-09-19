@@ -229,6 +229,21 @@ Argo CD manages separate staging and production environments, with both applicat
 
 The production resource tree verifies that the Kubernetes resources managed by Argo CD are healthy and synchronized with the Git repository.
 
+## Skills Demonstrated
+
+This project demonstrates hands-on experience designing and operating a production-style DevOps platform.
+
+- **CI/CD:** Automated application build, testing, containerization, and deployment using GitHub Actions.
+- **Containers:** Built immutable, explicitly versioned Docker images and published them to GitHub Container Registry (GHCR).
+- **Kubernetes:** Deployed and managed containerized workloads across staging and production environments.
+- **GitOps:** Implemented declarative continuous delivery using Argo CD and Git-based desired state.
+- **Environment Promotion:** Promoted the same validated container artifact from staging to production without rebuilding it.
+- **Infrastructure as Code:** Used Terraform to manage infrastructure and Kubernetes resources.
+- **Observability:** Implemented monitoring and visualization using Prometheus, Grafana, and Node Exporter.
+- **Troubleshooting:** Diagnosed and resolved Kubernetes, networking, deployment, monitoring, and CI/CD issues.
+- **Linux Administration:** Built and operated the platform on an Ubuntu Server homelab environment.
+- **Documentation:** Documented architecture, deployment workflows, validation steps, and operational evidence.
+
 ## Author
 
 **Ekerette Akpanyah**
