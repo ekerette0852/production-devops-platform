@@ -203,6 +203,30 @@ The GitOps workflow has been successfully validated end-to-end.
 
 This architecture separates CI from deployment. GitHub Actions builds, tests, publishes, and updates the desired application version in Git, while Argo CD continuously reconciles the Kubernetes production environment with the state stored in the GitOps repository.
 
+### Argo CD GitOps Verification
+
+The production application is continuously reconciled by Argo CD against the desired state stored in the GitOps repository.
+
+Current deployment status:
+
+- **Application:** `production-web`
+- **Health Status:** Healthy
+- **Sync Status:** Synced
+- **Last Sync:** Sync OK
+- **Deployment Strategy:** GitOps with Argo CD
+
+#### Multi-Environment GitOps
+
+![Argo CD Applications Overview](docs/screenshots/argocd/argocd-applications-overview.png)
+
+Argo CD manages separate staging and production environments, with both applications synchronized to their desired state.
+
+#### Production Resource Tree
+
+![Argo CD Production Healthy and Synced](docs/screenshots/argocd/argocd-production-healthy-synced.png)
+
+The production resource tree verifies that the Kubernetes resources managed by Argo CD are healthy and synchronized with the Git repository.
+
 ## Author
 
 **Ekerette Akpanyah**
