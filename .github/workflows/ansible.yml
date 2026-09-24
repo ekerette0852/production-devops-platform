@@ -1,0 +1,26 @@
+name: Ansible AWS Automation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ansible:
+    runs-on: [self-hosted, Linux, X64]
+
+        steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Ansible environment
+        run: |
+          ansible --version
+          aws --version
+          python3 --version
+          ansible-galaxy collection list | grep -E 'amazon.aws|community.aws'
+
+      - name: Verify AWS authentication
+        run: |
+          aws sts get-caller-identity
