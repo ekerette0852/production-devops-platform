@@ -10,7 +10,7 @@ jobs:
   ansible:
     runs-on: [self-hosted, Linux, X64]
 
-        steps:
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
