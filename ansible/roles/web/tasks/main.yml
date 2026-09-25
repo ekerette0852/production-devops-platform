@@ -31,3 +31,14 @@
       </body>
       </html>
   notify: Restart production web container
+
+- name: Ensure production web container is running
+  community.docker.docker_container:
+    name: production-web
+    image: nginx:1.30.4-alpine
+    state: started
+    restart_policy: unless-stopped
+    published_ports:
+      - "80:80"
+    volumes:
+      - /opt/production-web/index.html:/usr/share/nginx/html/index.html:ro
